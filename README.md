@@ -1,30 +1,18 @@
 # Fancy Index
 
-A responsive Apache index page.
-
-I was tired of seeing the ugly apache-generated index page, so I decided to do something about it. Inspired by [Seti UI](https://github.com/jesseweed/seti-ui) and [atom file-icons](https://github.com/file-icons/atom), this project adds an `.htaccess` file which tells apache to use a table, among other things, instead of `<pre>`.
-
-### Before Fancy Index:
-![before fancy index](before.png)
-
-### After Fancy Index
-![after fancy index](after.png)
-
+This is a fork of the [glen-cheney/fancy-index](https://github.com/glen-cheney/fancy-index) with modifications to allow automated setups.
+Refer to the original [README](https://github.com/glen-cheney/fancy-index/blob/main/README.md)
 
 ## Setup
 
-I'm going to assume you're using a `Sites` folder with apache, but it could be done differently. Wherever you see `USERNAME`, use your username.
+1. Clone or download the files to your directory (in this example clone under /var/www/foo)
+2. Go to the `fancy-index` dir and execute the script `./setup.sh /foo`, this will setup all the paths required and copy the `.htaccess` file in the `/var/www/foo` dir
 
-1. Clone or download the files.
-2. Add them to your `Sites` directory. The structure should be `/Users/USERNAME/Sites/fancy-index`.
-3. Copy the `.htaccess` file up one directory to `/Users/USERNAME/Sites/.htaccess`.
-4. Update your `DocumentRoot` in `/etc/apache2/users/USERNAME.conf` to point to your `Sites`. This will also cause `localhost` to point to `Sites` and you won't have to use the `~USERNAME` to access it.
-
-This is what mine looks like:
+This is example conf for the site `/foo`:
 ```apache
-DocumentRoot "/Users/glen.cheney/Sites"
+Alias /foo "/var/www/foo"
 
-<Directory "/Users/glen.cheney/Sites">
+<Directory "/var/www/foo">
     AllowOverride All
     Options Indexes MultiViews FollowSymLinks
     Require all granted
@@ -32,17 +20,8 @@ DocumentRoot "/Users/glen.cheney/Sites"
 
 ```
 
-Now restart apache `sudo apachectl restart`.
+Now reload apache `sudo systemctl reload apache2` (or for Red hat based distro `sudo systemctl reload httpd`).
 
-If you're having trouble or don't see the correct files, follow one of these guides ([Yosemite](http://coolestguidesontheplanet.com/get-apache-mysql-php-phpmyadmin-working-osx-10-10-yosemite/), [El Capitan](http://coolestguidesontheplanet.com/get-apache-mysql-php-and-phpmyadmin-working-on-osx-10-11-el-capitan/), [Sierra](https://coolestguidesontheplanet.com/get-apache-mysql-php-and-phpmyadmin-working-on-macos-sierra/), [High Sierra](https://coolestguidesontheplanet.com/install-apache-mysql-php-and-phpmyadmin-on-macos-high-sierra-10-13/)) to get your Sites folder working.
-
-## Mobile Comparison
-
-Now you don't have to zoom in or be a sniper with your finger!
-
-| Default  | Fancy  |
-|:--------:|:------:|
-|![before fancy index (mobile)](before_mobile.png)  |  ![after fancy index (mobile)](after_mobile.png)|
 
 ## Customizing hidden files and directories
 
