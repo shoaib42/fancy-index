@@ -13,23 +13,6 @@
   --color-search-border--focus: #8e44ad;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #222222;
-    --color-text: #bbb;
-    --color-table-bg: #222222;
-    --color-table-bg--head: #181818;
-    --color-table-bg--even: #333;
-    --color-table-text: #ccc;
-    --color-link-text: #3096d5;
-    --color-link-text--visited: #9e4ebf;
-    --color-search-text: #9e4ebf;
-    --color-search-bg: #181818;
-    --color-search-border: rgba(255, 255, 255, .15);
-    --color-search-border--focus: #9e4ebf;
-  }
-}
-
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
