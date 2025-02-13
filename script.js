@@ -1,4 +1,31 @@
 {
+  let timeDiff = null;
+  /**
+   * This fuckery is needed cause JS in its infinite wisdom cannot be simple.
+   * Strip out the TZ info in the date header and treat it as local timestamp
+   * Then you are on your way to find the timediff needed.
+   */
+  async function getServerTimeOffset() {
+    const resp = await fetch("/", { method: "HEAD" });
+    const dateHeader = resp.headers.get("date");
+    if (!dateHeader) {
+      console.error("No Date header received");
+      return;
+    }
+
+    const dateStringWithoutTZ = dateHeader.replace(/ \w+$/, '');
+    const serverTime = Date.parse(dateStringWithoutTZ);
+    const localTime = Date.now();
+
+    const minsMilli = 1000 * 60;
+    timeDiff = Math.round((localTime - serverTime) / minsMilli) * minsMilli; // Set it directly
+    console.log("Time offset loaded:", timeDiff);
+  }
+  (async function initialize() {
+    await getServerTimeOffset(); // Wait for the fetch to resolve
+    console.log("Time offset after load:", timeDiff);
+  })();
+
   function fixTable() {
     const table = document.querySelector('table');
 
@@ -118,16 +145,19 @@
     const hour = parseInt(timeOfDay[0], 10);
     const minutes = parseInt(timeOfDay[1], 10);
 
-    return new Date(year, month, _day, hour, minutes, 0);
+    return new Date(new Date(year, month, _day, hour, minutes, 0).getTime() + timeDiff);
   }
 
-  function fixTime() {
+  async function fixTime() {
     const hasRelativeTimeFormatter = 'RelativeTimeFormat' in Intl;
     if (!hasRelativeTimeFormatter) return;
 
+    while (timeDiff === null) {
+      await new Promise(r => setTimeout(r, 5));  // Wait 50ms before checking again
+    }
+
     const formatter = new Intl.RelativeTimeFormat();
     const now = Date.now();
-
     Array.from(document.querySelectorAll('.indexcollastmod')).forEach((date, i) => {
       // Skip the first row because it's the link to the parent directory.
       if (i === 0) {
